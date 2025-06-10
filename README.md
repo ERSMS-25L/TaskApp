@@ -11,7 +11,7 @@ This application follows a 3-tier architecture:
 1. **Frontend**: A React-based UI that interacts with backend services.
 2. **Backend Services**:
    - **User Service**: Manages user authentication and profiles.
-   - **Notification Service**: Sends notifications (e.g., email, SMS) for transaction updates and alerts.
+   - **Notification Service**: Sends notifications (e.g., email, SMS) for task deadline reminders and alerts.
 3. **Database**: SQLite is used for data persistence in this example.
 
 ## Technology Stack
@@ -59,9 +59,9 @@ Before you begin, ensure you have the following installed:
    docker build -t gcr.io/YOUR_PROJECT_ID/user-service:latest .
    docker push gcr.io/YOUR_PROJECT_ID/user-service:latest
 
-   cd ../transaction-service
-   docker build -t gcr.io/YOUR_PROJECT_ID/transaction-service:latest .
-   docker push gcr.io/YOUR_PROJECT_ID/transaction-service:latest
+   cd ../task-service
+   docker build -t gcr.io/YOUR_PROJECT_ID/task-service:latest .
+   docker push gcr.io/YOUR_PROJECT_ID/task-service:latest
 
    cd ../notification-service
    docker build -t gcr.io/YOUR_PROJECT_ID/notification-service:latest .
@@ -94,7 +94,7 @@ To run the application locally using Docker Compose, follow these steps:
          - "3000:3000"
        depends_on:
          - user-service
-         - transaction-service
+        - task-service
          - notification-service
 
      user-service:
@@ -104,8 +104,8 @@ To run the application locally using Docker Compose, follow these steps:
        environment:
          - ALLOWED_ORIGINS=http://localhost:3000
 
-     transaction-service:
-       image: gcr.io/YOUR_PROJECT_ID/transaction-service:latest
+    task-service:
+      image: gcr.io/YOUR_PROJECT_ID/task-service:latest
        ports:
          - "8002:80"
        environment:

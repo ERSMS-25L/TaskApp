@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from routes import router  # Importing the router
+from routes import router  # Importing the router for task endpoints
 
 app = FastAPI()
 
@@ -18,13 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include the router for transactions
+# Include the router for tasks
 app.include_router(router, prefix="/api")
 
 @app.get("/")
 def read_root():
-    return {"message": "Transaction Service is up and running!"}
+    return {"message": "Task Service is up and running!"}
 
 @app.get("/api/health")
 def health_check():
-    return JSONResponse(content={"status": "Transaction Service is running!"}, status_code=200)
+    return JSONResponse(content={"status": "Task Service is running!"}, status_code=200)

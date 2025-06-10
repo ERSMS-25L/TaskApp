@@ -1,5 +1,7 @@
 # notification-service/main.py
 import os
+
+import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,11 +23,10 @@ app.add_middleware(
 )
 
 # Dummy in-memory storage for notifications
-notifications = [
-    {"id": 1, "message": "Your payment was successful!", "recipient": "user1@example.com", "notification_type": "email"},
-    {"id": 2, "message": "New transaction alert: $50 deposited.", "recipient": "user2@example.com", "notification_type": "SMS"},
-    {"id": 3, "message": "Account verification needed.", "recipient": "user3@example.com", "notification_type": "email"},
-]
+notifications = []
+
+# URL of the task service to check for upcoming deadlines
+TASK_SERVICE_URL = os.getenv("TASK_SERVICE_URL", "http://task-service:8000")
 
 # Models
 class NotificationRequest(BaseModel):
@@ -38,6 +39,15 @@ class NotificationResponse(BaseModel):
     message: str
     recipient: str
     notification_type: str
+
+
+async def fetch_due_tasks(days: int = 1):
+    """Fetch tasks that are due within a given number of days from the task service."""
+    url = f"{TASK_SERVICE_URL}/api/tasks/due_soon/?days={days}"
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url)
+        resp.raise_for_status()
+        return resp.json()
 
 # Endpoints
 
@@ -66,6 +76,25 @@ async def get_notification(notification_id: int):
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
     return notification
+
+
+@app.post("/send-deadline-reminders", response_model=List[NotificationResponse])
+async def send_deadline_reminders(days: int = 1):
+    """Fetch tasks due soon and create notifications for them."""
+    due_tasks = await fetch_due_tasks(days)
+    created = []
+    for task in due_tasks:
+        notification_id = len(notifications) + 1
+        message = f"Task '{task['title']}' is due on {task['due_date']}"
+        new_notification = {
+            "id": notification_id,
+            "message": message,
+            "recipient": f"user{task['user_id']}@example.com",
+            "notification_type": "email",
+        }
+        notifications.append(new_notification)
+        created.append(new_notification)
+    return created
 
 @app.get("/api/health")
 async def health_check():
