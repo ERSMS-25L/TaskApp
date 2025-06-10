@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ./user-service
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=sqlite:////data/sqlite_user.db  # Use SQLite and a path within the volume
+    ports:
+      - "8001:8000"
+    volumes:
+      - user_data:/data  # Persistent volume for user service
+
+  transaction-service:
+    build:
+      context: ./transaction-service
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=sqlite:////data/sqlite_transaction.db  # Use SQLite and a path within the volume
+    ports:
+      - "8002:8000"
+    volumes:
+      - transaction_data:/data  # Persistent volume for transaction service
+
+  notification-service:
+    build:
+      context: ./notification-service
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=sqlite:////data/sqlite_notification.db  # Use SQLite and a path within the volume
+    ports:
+      - "8003:8000"
+    volumes:
+      - notification_data:/data  # Persistent volume for notification service
+
+  frontend:
+    build:
+      context: ./frontend  
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - transaction-service
+      - notification-service
+
+volumes:
+  user_data:  # Volume for user service data
+  transaction_data:  # Volume for transaction service data
+  notification_data:  # Volume for notification service data

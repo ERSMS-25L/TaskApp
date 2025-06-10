@@ -1,0 +1,23 @@
+/* src/components/ServiceStatus.css */
+
+.service-status {
+    margin-top: 1rem;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 5px;
+  }
+  
+  .success-message {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    padding: 0.75rem;
+    border-radius: 5px;
+  }
+  
+  .error-message {
+    color: #c62828;
+    background-color: #ffebee;
+    padding: 0.75rem;
+    border-radius: 5px;
+  }
+  

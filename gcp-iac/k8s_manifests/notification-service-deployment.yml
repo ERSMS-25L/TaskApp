@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/notification-service
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ALLOWED_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-service-config
+                  key: ALLOWED_ORIGINS
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  annotations:
+    cloud.google.com/load-balancer-type: 'external' # Ensure it's recognized as an external load balancer
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: notification-service
+  ports:
+    - port: 8003 # External port for internal communication within the cluster
+      targetPort: 8000 # Match the container port

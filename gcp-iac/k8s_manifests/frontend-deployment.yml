@@ -1,0 +1,61 @@
+# ConfigMap for frontend environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  REACT_APP_USER_SERVICE_URL: 'http://34.118.8.17:8001'
+  REACT_APP_TRANSACTION_SERVICE_URL: 'http://34.116.173.204:8002'
+  REACT_APP_NOTIFICATION_SERVICE_URL: 'http://34.118.36.199:8003'
+
+---
+# Deployment for frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/frontend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_USER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_USER_SERVICE_URL
+            - name: REACT_APP_TRANSACTION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_TRANSACTION_SERVICE_URL
+            - name: REACT_APP_NOTIFICATION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_NOTIFICATION_SERVICE_URL
+
+---
+# LoadBalancer Service for frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  type: LoadBalancer # Use LoadBalancer to expose frontend to the internet
+  ports:
+    - port: 80 # External port
+      targetPort: 3000 # Internal container port
+  selector:
+    app: frontend

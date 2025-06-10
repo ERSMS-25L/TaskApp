@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/user-service
+          ports:
+            - containerPort: 8000 # Internal container port
+          env:
+            - name: ALLOWED_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: user-service-config
+                  key: ALLOWED_ORIGINS
+            - name: DATABASE_URL
+              value: 'sqlite:///./sqlite_user.db'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  annotations:
+    cloud.google.com/load-balancer-type: 'external' # Specifies the load balancer as external
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: user-service
+  ports:
+    - port: 8001 # External port for the service
+      targetPort: 8000 # Internal container port

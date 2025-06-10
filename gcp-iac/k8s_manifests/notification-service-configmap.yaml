@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-service-config
+data:
+  # ALLOWED_ORIGINS: "http://localhost:3000,http://34.42.12.23,http://34.42.12.23:80"  # Us Use service name for internal communication
+  ALLOWED_ORIGINS: "*"
