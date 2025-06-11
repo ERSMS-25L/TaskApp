@@ -31,6 +31,9 @@ This application follows a 3-tier architecture:
 - **CD**: GitHub Actions deploys the services to Google Kubernetes Engine (GKE).
 - **Infrastructure**: Terraform is used to create and manage GKE clusters and other necessary resources.
 
+### GitHub Secrets
+Store your Google Cloud service account JSON key in the repository settings as `GCP_SERVICE_ACCOUNT_KEY` and your base64-encoded kubeconfig as `KUBECONFIG_FILE`. These secrets are used by GitHub Actions to build images and deploy to the cluster.
+
 ## Getting Started
 
 ### Prerequisites

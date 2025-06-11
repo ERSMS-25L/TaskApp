@@ -1,0 +1,22 @@
+name: Teardown Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_FILE }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Delete resources
+        run: |
+          kubectl delete -f gcp-iac/k8s_manifests/ --ignore-not-found
+          kubectl delete pods --all --namespace default --ignore-not-found
