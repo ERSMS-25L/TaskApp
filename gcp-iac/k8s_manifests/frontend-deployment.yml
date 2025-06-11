@@ -50,6 +50,11 @@ spec:
                 configMapKeyRef:
                   name: frontend-config
                   key: REACT_APP_NOTIFICATION_SERVICE_URL
+            - name: REACT_APP_DONATION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_DONATION_SERVICE_URL
             - name: REACT_APP_FIREBASE_API_KEY
               valueFrom:
                 configMapKeyRef:
