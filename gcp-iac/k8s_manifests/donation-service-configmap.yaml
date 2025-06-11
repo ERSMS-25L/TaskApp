@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: donation-service-config
 data:
-  DONATION_SUCCESS_URL: "http://34.118.114.185.nip.io/success"
-  DONATION_CANCEL_URL: "http://34.118.114.185.nip.io/cancel"
-  ALLOWED_ORIGINS: "http://34.118.114.185.nip.io"
+  DONATION_SUCCESS_URL: "http://34.118.122.83/success"
+  DONATION_CANCEL_URL: "http://34.118.122.83/cancel"
+  ALLOWED_ORIGINS: "http://34.118.122.83"

@@ -41,3 +41,4 @@ jobs:
           kubectl rollout status deployment/user-service --timeout=120s
           kubectl rollout status deployment/task-service --timeout=120s
           kubectl rollout status deployment/notification-service --timeout=120s
+          kubectl rollout status deployment/donation-service --timeout=120s
