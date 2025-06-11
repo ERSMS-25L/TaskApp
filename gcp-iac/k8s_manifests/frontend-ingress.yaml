@@ -7,10 +7,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - example.com
+        - ersmstaskapp.example.org
       secretName: tls-secret
   rules:
-    - host: example.com
+    - host: ersmstaskapp.example.org
       http:
         paths:
           - path: /
