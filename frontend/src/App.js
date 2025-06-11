@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Transactions from './components/Transactions';
+import Tasks from './components/Tasks';
 import UserService from './components/UserService';
 import NotificationService from './components/NotificationService';
 import Navbar from './components/Navbar';
@@ -16,7 +16,7 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} /> {/* Home component as default */}
-          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/tasks" element={<Tasks />} />
           <Route path="/users" element={<UserService />} />
           <Route path="/notifications" element={<NotificationService />} />
         </Routes>
