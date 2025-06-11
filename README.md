@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Task Management Application is a microservices-based application designed to provide a seamless experience for managing personal tasks. This sample app includes four primary services: User Service, Task Service, Notification Service and Donation Service, along with a Frontend that allows users to interact with the backend services. This application is developed and deployed using Docker and Kubernetes, with Google Cloud Platform (GCP) as the cloud provider.
+The Task Management Application is a microservices-based application designed to provide a seamless experience for managing personal tasks. It includes three primary services: User Service, Task Service and Notification Service, along with a Frontend that allows users to interact with the backend services. This application is developed and deployed using Docker and Kubernetes, with Google Cloud Platform (GCP) as the cloud provider.
 
 ## Architecture
 
@@ -82,41 +82,8 @@ Before you begin, ensure you have the following installed:
 
 To run the application locally using Docker Compose, follow these steps:
 
-1. **Create a `docker-compose.yml` file** in the root of your project with the following content:
-
-   ```yaml
-   version: '3.8'
-
-   services:
-     frontend:
-       image: gcr.io/YOUR_PROJECT_ID/frontend:latest
-       ports:
-         - "3000:3000"
-       depends_on:
-         - user-service
-        - task-service
-         - notification-service
-
-     user-service:
-       image: gcr.io/YOUR_PROJECT_ID/user-service:latest
-       ports:
-         - "8001:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-
-    task-service:
-      image: gcr.io/YOUR_PROJECT_ID/task-service:latest
-       ports:
-         - "8002:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-     notification-service:
-       image: gcr.io/YOUR_PROJECT_ID/notification-service:latest
-       ports:
-         - "8003:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-   ```
+1. Ensure Docker Compose is installed.
+   The repository already contains a `docker-compose.yml` that builds all services locally. It also passes the required environment variables to the React frontend so it can reach the backend services.
 
 2. **Run the application** using Docker Compose:
 
@@ -125,6 +92,12 @@ To run the application locally using Docker Compose, follow these steps:
    ```
 
 3. **Access the application** by navigating to `http://localhost:3000` in your web browser.
+4. **Test notifications** by sending a request:
+   ```bash
+   curl -X POST http://localhost:8003/send-notification \
+        -H 'Content-Type: application/json' \
+        -d '{"message":"Hello","recipient":"test@example.com","notification_type":"email"}'
+   ```
 
 ### Kubernetes Deployment
 

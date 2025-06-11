@@ -36,7 +36,11 @@ services:
 
   frontend:
     build:
-      context: ./frontend  
+      context: ./frontend
+    environment:
+      - REACT_APP_USER_SERVICE_URL=http://user-service:8000
+      - REACT_APP_TASK_SERVICE_URL=http://task-service:8000
+      - REACT_APP_NOTIFICATION_SERVICE_URL=http://notification-service:8000
     ports:
       - "3000:3000"
     depends_on:

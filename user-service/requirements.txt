@@ -3,3 +3,5 @@ uvicorn
 sqlalchemy
 psycopg2
 passlib[bcrypt]  # Added for password hashing
+pytest
+fastapi[testclient]

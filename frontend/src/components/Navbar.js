@@ -6,10 +6,10 @@ import './Navbar.css'; // Import the CSS file for styling
 const Navbar = () => {
     return (
         <nav className="navbar">
-            <h1 className="navbar-title">Finance Dashboard</h1> {/* Add a title */}
+            <h1 className="navbar-title">Task Dashboard</h1>
             <ul className="navbar-links">
                 <li>
-                    <Link to="/transactions">Transactions</Link>
+                    <Link to="/tasks">Tasks</Link>
                 </li>
                 <li>
                     <Link to="/users">Users</Link> {/* Link to UserService */}
