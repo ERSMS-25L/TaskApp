@@ -7,21 +7,22 @@ services:
     environment:
       - PYTHONPATH=/app
       - DATABASE_URL=sqlite:////data/sqlite_user.db  # Use SQLite and a path within the volume
+      - FIREBASE_CREDENTIALS_JSON=${FIREBASE_CREDENTIALS_JSON:-}
     ports:
       - "8001:8000"
     volumes:
       - user_data:/data  # Persistent volume for user service
 
-  transaction-service:
+  task-service:
     build:
-      context: ./transaction-service
+      context: ./task-service
     environment:
       - PYTHONPATH=/app
-      - DATABASE_URL=sqlite:////data/sqlite_transaction.db  # Use SQLite and a path within the volume
+      - DATABASE_URL=sqlite:////data/sqlite_task.db  # Use SQLite and a path within the volume
     ports:
       - "8002:8000"
     volumes:
-      - transaction_data:/data  # Persistent volume for transaction service
+      - task_data:/data  # Persistent volume for task service
 
   notification-service:
     build:
@@ -49,16 +50,20 @@ services:
 
   frontend:
     build:
-      context: ./frontend  
+      context: ./frontend
+    environment:
+      - REACT_APP_USER_SERVICE_URL=http://user-service:8000
+      - REACT_APP_TASK_SERVICE_URL=http://task-service:8000
+      - REACT_APP_NOTIFICATION_SERVICE_URL=http://notification-service:8000
     ports:
       - "3000:3000"
     depends_on:
       - user-service
-      - transaction-service
+      - task-service
       - notification-service
       - donation-service
 
 volumes:
   user_data:  # Volume for user service data
-  transaction_data:  # Volume for transaction service data
+  task_data:  # Volume for task service data
   notification_data:  # Volume for notification service data

@@ -1,41 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transaction-service
+  name: task-service
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: transaction-service
+      app: task-service
   template:
     metadata:
       labels:
-        app: transaction-service
+        app: task-service
     spec:
       containers:
-        - name: transaction-service
-          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/transaction-service
+        - name: task-service
+          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/task-service
           ports:
             - containerPort: 8000 # Internal container port
           env:
             - name: ALLOWED_ORIGINS
               valueFrom:
                 configMapKeyRef:
-                  name: transaction-service-config
+                  name: task-service-config
                   key: ALLOWED_ORIGINS
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: transaction-service
+  name: task-service
   annotations:
     cloud.google.com/load-balancer-type: 'external' # Specifies the load balancer as external
 spec:
   type: LoadBalancer
 
   selector:
-    app: transaction-service
+    app: task-service
   ports:
     - port: 8002 # External port for the service
       targetPort: 8000 # Internal container port

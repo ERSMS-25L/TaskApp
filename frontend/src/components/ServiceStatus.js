@@ -5,7 +5,7 @@ import './ServiceStatus.css'; // Assuming you create a separate CSS file for sty
 const ServiceStatus = () => {
     const [serviceStatus, setServiceStatus] = useState({
         userService: '',
-        transactionService: '',
+        taskService: '',
         notificationService: ''
     });
     const [loading, setLoading] = useState(true);
@@ -15,24 +15,24 @@ const ServiceStatus = () => {
             try {
                 // Fetch service health check endpoints using environment variables
                 const userResponse = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/api/health`);
-                const transactionResponse = await fetch(`${process.env.REACT_APP_TRANSACTION_SERVICE_URL}/api/health`);
+                const taskResponse = await fetch(`${process.env.REACT_APP_TASK_SERVICE_URL}/api/health`);
                 const notificationResponse = await fetch(`${process.env.REACT_APP_NOTIFICATION_SERVICE_URL}/api/health`);
 
                 // Check if the responses are OK (status code 200)
                 const userStatus = userResponse.ok ? 'running' : 'OFF';
-                const transactionStatus = transactionResponse.ok ? 'running' : 'OFF';
+                const taskStatus = taskResponse.ok ? 'running' : 'OFF';
                 const notificationStatus = notificationResponse.ok ? 'running' : 'OFF';
 
                 setServiceStatus({
                     userService: userStatus,
-                    transactionService: transactionStatus,
+                    taskService: taskStatus,
                     notificationService: notificationStatus,
                 });
             } catch (error) {
                 console.error('Error fetching service status:', error);
                 setServiceStatus({
                     userService: 'Error',
-                    transactionService: 'Error',
+                    taskService: 'Error',
                     notificationService: 'Error',
                 });
             } finally {
@@ -53,8 +53,8 @@ const ServiceStatus = () => {
         switch (serviceName) {
             case 'userService':
                 return process.env.REACT_APP_USER_SERVICE_URL; // Use environment variable
-            case 'transactionService':
-                return process.env.REACT_APP_TRANSACTION_SERVICE_URL; // Use environment variable
+            case 'taskService':
+                return process.env.REACT_APP_TASK_SERVICE_URL; // Use environment variable
             case 'notificationService':
                 return process.env.REACT_APP_NOTIFICATION_SERVICE_URL; // Use environment variable
             default:

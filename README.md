@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Task Management Application is a microservices-based application designed to provide a seamless experience for managing personal tasks. This sample app includes four primary services: User Service, Task Service, Notification Service and Donation Service, along with a Frontend that allows users to interact with the backend services. This application is developed and deployed using Docker and Kubernetes, with Google Cloud Platform (GCP) as the cloud provider.
+The Task Management Application is a microservices-based application designed to provide a seamless experience for managing personal tasks. It includes three primary services: User Service, Task Service and Notification Service, along with a Frontend that allows users to interact with the backend services. This application is developed and deployed using Docker and Kubernetes, with Google Cloud Platform (GCP) as the cloud provider.
 
 ## Architecture
 
@@ -11,8 +11,9 @@ This application follows a 3-tier architecture:
 1. **Frontend**: A React-based UI that interacts with backend services.
 2. **Backend Services**:
    - **User Service**: Manages user authentication and profiles.
-   - **Notification Service**: Sends notifications (e.g., email, SMS) for transaction updates and alerts.
+   - **Notification Service**: Sends notifications (e.g., email, SMS) for task deadline reminders and alerts.
 3. **Database**: SQLite is used for data persistence in this example.
+4. **Authentication**: Firebase Authentication handles login/logout.
 
 ## Technology Stack
 
@@ -30,6 +31,9 @@ This application follows a 3-tier architecture:
 - **CI**: GitHub Actions automates Docker image building and pushes to Google Container Registry (GCR). It includes linting and testing workflows.
 - **CD**: GitHub Actions deploys the services to Google Kubernetes Engine (GKE).
 - **Infrastructure**: Terraform is used to create and manage GKE clusters and other necessary resources.
+
+### GitHub Secrets
+Store your Google Cloud service account JSON key in the repository settings as `GCP_SERVICE_ACCOUNT_KEY` and your base64-encoded kubeconfig as `KUBECONFIG_FILE`. These secrets are used by GitHub Actions to build images and deploy to the cluster.
 
 ## Getting Started
 
@@ -59,9 +63,9 @@ Before you begin, ensure you have the following installed:
    docker build -t gcr.io/YOUR_PROJECT_ID/user-service:latest .
    docker push gcr.io/YOUR_PROJECT_ID/user-service:latest
 
-   cd ../transaction-service
-   docker build -t gcr.io/YOUR_PROJECT_ID/transaction-service:latest .
-   docker push gcr.io/YOUR_PROJECT_ID/transaction-service:latest
+   cd ../task-service
+   docker build -t gcr.io/YOUR_PROJECT_ID/task-service:latest .
+   docker push gcr.io/YOUR_PROJECT_ID/task-service:latest
 
    cd ../notification-service
    docker build -t gcr.io/YOUR_PROJECT_ID/notification-service:latest .
@@ -82,41 +86,8 @@ Before you begin, ensure you have the following installed:
 
 To run the application locally using Docker Compose, follow these steps:
 
-1. **Create a `docker-compose.yml` file** in the root of your project with the following content:
-
-   ```yaml
-   version: '3.8'
-
-   services:
-     frontend:
-       image: gcr.io/YOUR_PROJECT_ID/frontend:latest
-       ports:
-         - "3000:3000"
-       depends_on:
-         - user-service
-         - transaction-service
-         - notification-service
-
-     user-service:
-       image: gcr.io/YOUR_PROJECT_ID/user-service:latest
-       ports:
-         - "8001:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-
-     transaction-service:
-       image: gcr.io/YOUR_PROJECT_ID/transaction-service:latest
-       ports:
-         - "8002:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-     notification-service:
-       image: gcr.io/YOUR_PROJECT_ID/notification-service:latest
-       ports:
-         - "8003:80"
-       environment:
-         - ALLOWED_ORIGINS=http://localhost:3000
-   ```
+1. Ensure Docker Compose is installed.
+   The repository already contains a `docker-compose.yml` that builds all services locally. It also passes the required environment variables to the React frontend so it can reach the backend services.
 
 2. **Run the application** using Docker Compose:
 
@@ -124,9 +95,36 @@ To run the application locally using Docker Compose, follow these steps:
    docker-compose up --build
    ```
 
+Ensure you set the Firebase environment variables defined in `frontend/env_example` for authentication to work locally.
+For Kubernetes deployments, these variables are set in `frontend-config` within `gcp-iac/k8s_manifests/frontend-deployment.yml`.
+
+### Firebase Credentials
+
+For Firebase Authentication, create a service account in the Firebase console and download the JSON credentials. When running locally, set `FIREBASE_CREDENTIALS_JSON` to the contents of this JSON file:
+
+```bash
+export FIREBASE_CREDENTIALS_JSON="$(cat path/to/service_account.json)"
+```
+
+The Docker Compose file passes this variable to the user service so it can initialise Firebase Admin.
+
 3. **Access the application** by navigating to `http://localhost:3000` in your web browser.
+4. **Test notifications** by sending a request:
+   ```bash
+   curl -X POST http://localhost:8003/send-notification \
+        -H 'Content-Type: application/json' \
+        -d '{"message":"Hello","recipient":"test@example.com","notification_type":"email"}'
+   ```
 
 ### Kubernetes Deployment
+
+Create a secret for the Firebase service account before applying the manifests:
+
+```bash
+kubectl create secret generic firebase-sa --from-file=credentials.json=path/to/service_account.json
+```
+
+Then deploy the manifests in `gcp-iac/k8s_manifests`:
 
 #### Services and Pods Status
 
