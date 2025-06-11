@@ -39,7 +39,9 @@ jobs:
       - name: Deploy Grafana for Visualization
         run: |
           helm repo add grafana https://grafana.github.io/helm-charts
-          helm upgrade --install grafana grafana/grafana --namespace monitoring
+          helm upgrade --install grafana grafana/grafana \
+            --namespace monitoring \
+            --set service.type=LoadBalancer
 
       - name: Get Grafana Admin Password
         run: |
