@@ -5,8 +5,9 @@ from passlib.context import CryptContext
 Base = declarative_base()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     firebase_uid = Column(String, unique=True, index=True)

@@ -11,7 +11,8 @@ COPY alembic /app/alembic
 COPY ./app/populate_db.py /app/populate_db.py  
 
 # Install required packages
-RUN pip install fastapi uvicorn sqlalchemy psycopg2 passlib[bcrypt] alembic
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Command to run the dummy data population script followed by the FastAPI app
 CMD ["sh", "-c", "python populate_db.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
