@@ -11,7 +11,9 @@ This application follows a 3-tier architecture:
 1. **Frontend**: A React-based UI that interacts with backend services.
 2. **Backend Services**:
    - **User Service**: Manages user authentication and profiles.
+   - **Task Service**: Handles CRUD operations for tasks.
    - **Notification Service**: Sends notifications (e.g., email, SMS) for task deadline reminders and alerts.
+   - **Donation Service**: Provides Stripe-based donation functionality.
 3. **Database**: SQLite is used for data persistence in this example.
 4. **Authentication**: Firebase Authentication handles login/logout.
 
@@ -95,8 +97,8 @@ To run the application locally using Docker Compose, follow these steps:
    docker-compose up --build
    ```
 
-Ensure you set the Firebase environment variables defined in `frontend/env_example` for authentication to work locally.
-For Kubernetes deployments, these variables are set in `frontend-config` within `gcp-iac/k8s_manifests/frontend-deployment.yml`.
+Ensure you set the environment variables defined in `env_example` for local runs. These include Firebase credentials for the frontend and Stripe keys for the donation service.
+For Kubernetes deployments, most variables are provided by the ConfigMaps and Secrets located under `gcp-iac/k8s_manifests`.
 
 ### Firebase Credentials
 
@@ -122,6 +124,14 @@ Create a secret for the Firebase service account before applying the manifests:
 
 ```bash
 kubectl create secret generic firebase-sa --from-file=credentials.json=path/to/service_account.json
+```
+
+Create a secret containing the Stripe API keys for the donation service:
+
+```bash
+kubectl create secret generic donation-service-secrets \
+  --from-literal=STRIPE_SECRET_KEY=<your-stripe-secret> \
+  --from-literal=STRIPE_PUBLISHABLE_KEY=<your-publishable-key>
 ```
 
 Then deploy the manifests in `gcp-iac/k8s_manifests`:

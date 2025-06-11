@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: donation-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: donation-service
+  template:
+    metadata:
+      labels:
+        app: donation-service
+    spec:
+      containers:
+        - name: donation-service
+          image: europe-central2-docker.pkg.dev/ersms-25l-462511/ersms-app-test/donation-service
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: donation-service-config
+            - secretRef:
+                name: donation-service-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: donation-service
+  annotations:
+    cloud.google.com/load-balancer-type: 'external'
+spec:
+  type: LoadBalancer
+  selector:
+    app: donation-service
+  ports:
+    - port: 8004
+      targetPort: 8000
