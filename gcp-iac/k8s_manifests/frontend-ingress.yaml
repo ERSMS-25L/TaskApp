@@ -7,10 +7,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - ersmstaskapp.example.org
+        - 34.118.114.185.nip.io
       secretName: tls-secret
   rules:
-    - host: ersmstaskapp.example.org
+    - host: 34.118.114.185.nip.io
       http:
         paths:
           - path: /

@@ -2,3 +2,6 @@ persistence:
   enabled: true
   size: 10Gi
   storageClassName: standard
+
+service:
+  type: LoadBalancer
