@@ -25,6 +25,11 @@ spec:
                   key: ALLOWED_ORIGINS
             - name: DATABASE_URL
               value: 'sqlite:///./sqlite_user.db'
+            - name: FIREBASE_CREDENTIALS_JSON
+              valueFrom:
+                secretKeyRef:
+                  name: firebase-sa
+                  key: credentials.json
 
 ---
 apiVersion: v1

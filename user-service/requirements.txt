@@ -3,5 +3,9 @@ uvicorn
 sqlalchemy
 psycopg2
 passlib[bcrypt]  # Added for password hashing
+firebase-admin
 pytest
 fastapi[testclient]
+httpx
+asgi_lifespan
+pytest-asyncio
