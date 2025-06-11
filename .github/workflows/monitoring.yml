@@ -38,7 +38,6 @@ jobs:
 
       - name: Deploy Grafana for Visualization
         run: |
-          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/grafana-namespace.yaml
           helm repo add grafana https://grafana.github.io/helm-charts
           helm upgrade --install grafana grafana/grafana --namespace monitoring
 
