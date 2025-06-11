@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: donation-service-config
+data:
+  DONATION_SUCCESS_URL: "http://localhost:3000/success"
+  DONATION_CANCEL_URL: "http://localhost:3000/cancel"
+  ALLOWED_ORIGINS: "http://localhost:3000"

@@ -8,3 +8,9 @@ DONATION_CANCEL_URL=http://localhost:3000/cancel
 
 # CORS Configuration
 ALLOWED_ORIGINS=http://localhost:3000
+
+# Frontend service endpoints
+REACT_APP_USER_SERVICE_URL=http://localhost:8001
+REACT_APP_TRANSACTION_SERVICE_URL=http://localhost:8002
+REACT_APP_NOTIFICATION_SERVICE_URL=http://localhost:8003
+REACT_APP_DONATION_SERVICE_URL=http://localhost:8004
