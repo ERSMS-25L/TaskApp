@@ -29,3 +29,4 @@ jobs:
           ./build_and_push.sh user-service
           ./build_and_push.sh task-service
           ./build_and_push.sh notification-service
+          ./build_and_push.sh donation-service
