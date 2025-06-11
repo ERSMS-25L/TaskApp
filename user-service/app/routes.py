@@ -1,10 +1,38 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
+from pydantic import BaseModel
 from models import User
-from database import get_db  # Make sure to define this in your database file
+from database import get_db
+from firebase_admin import auth
 
 router = APIRouter()
+
+
+class TokenRequest(BaseModel):
+    token: str
+
+
+@router.post("/auth/verify", response_model=dict)
+def verify_token(payload: TokenRequest, db: Session = Depends(get_db)):
+    """Verify Firebase ID token and register user if new."""
+    try:
+        decoded = auth.verify_id_token(payload.token)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    firebase_uid = decoded.get("uid")
+    email = decoded.get("email")
+    username = decoded.get("name") or (email.split("@")[0] if email else firebase_uid)
+
+    user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+    if not user:
+        user = User(firebase_uid=firebase_uid, email=email, username=username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    return {"id": user.id, "username": user.username, "email": user.email}
 
 @router.post("/users/", response_model=dict)
 def create_user(username: str, email: str, password: str, db: Session = Depends(get_db)):

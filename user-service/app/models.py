@@ -7,11 +7,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(Base):
     __tablename__ = 'users'
-    
+
     id = Column(Integer, primary_key=True, index=True)
+    firebase_uid = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String)
+    password = Column(String, nullable=True)
 
     def set_password(self, plain_password: str) -> None:
         """Hash and store the provided password."""

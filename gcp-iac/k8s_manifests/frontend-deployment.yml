@@ -7,6 +7,10 @@ data:
   REACT_APP_USER_SERVICE_URL: 'http://34.118.8.17:8001'
   REACT_APP_TASK_SERVICE_URL: 'http://34.116.170.83:8002'
   REACT_APP_NOTIFICATION_SERVICE_URL: 'http://34.118.36.199:8003'
+  REACT_APP_FIREBASE_API_KEY: 'AIzaSyAc8gvOKfwc4IQp3--QlpXnKREWlasKV1U'
+  REACT_APP_FIREBASE_AUTH_DOMAIN: 'ersms-25l.firebaseapp.com'
+  REACT_APP_FIREBASE_PROJECT_ID: 'ersms-25l'
+  REACT_APP_FIREBASE_APP_ID: '1:604953376833:web:91eb87850fed3dfcc8eec0'
 
 ---
 # Deployment for frontend
@@ -45,6 +49,26 @@ spec:
                 configMapKeyRef:
                   name: frontend-config
                   key: REACT_APP_NOTIFICATION_SERVICE_URL
+            - name: REACT_APP_FIREBASE_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_FIREBASE_API_KEY
+            - name: REACT_APP_FIREBASE_AUTH_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_FIREBASE_AUTH_DOMAIN
+            - name: REACT_APP_FIREBASE_PROJECT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_FIREBASE_PROJECT_ID
+            - name: REACT_APP_FIREBASE_APP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: REACT_APP_FIREBASE_APP_ID
 
 ---
 # LoadBalancer Service for frontend

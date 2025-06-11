@@ -13,6 +13,7 @@ This application follows a 3-tier architecture:
    - **User Service**: Manages user authentication and profiles.
    - **Notification Service**: Sends notifications (e.g., email, SMS) for task deadline reminders and alerts.
 3. **Database**: SQLite is used for data persistence in this example.
+4. **Authentication**: Firebase Authentication handles login/logout.
 
 ## Technology Stack
 
@@ -94,6 +95,19 @@ To run the application locally using Docker Compose, follow these steps:
    docker-compose up --build
    ```
 
+Ensure you set the Firebase environment variables defined in `frontend/env_example` for authentication to work locally.
+For Kubernetes deployments, these variables are set in `frontend-config` within `gcp-iac/k8s_manifests/frontend-deployment.yml`.
+
+### Firebase Credentials
+
+For Firebase Authentication, create a service account in the Firebase console and download the JSON credentials. When running locally, set `FIREBASE_CREDENTIALS_JSON` to the contents of this JSON file:
+
+```bash
+export FIREBASE_CREDENTIALS_JSON="$(cat path/to/service_account.json)"
+```
+
+The Docker Compose file passes this variable to the user service so it can initialise Firebase Admin.
+
 3. **Access the application** by navigating to `http://localhost:3000` in your web browser.
 4. **Test notifications** by sending a request:
    ```bash
@@ -103,6 +117,14 @@ To run the application locally using Docker Compose, follow these steps:
    ```
 
 ### Kubernetes Deployment
+
+Create a secret for the Firebase service account before applying the manifests:
+
+```bash
+kubectl create secret generic firebase-sa --from-file=credentials.json=path/to/service_account.json
+```
+
+Then deploy the manifests in `gcp-iac/k8s_manifests`:
 
 #### Services and Pods Status
 
