@@ -66,6 +66,25 @@ async def create_donation_link(donation: DonationRequest):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
+@app.get("/get-charity-links")
+async def get_charity_links():
+    charity_links = [
+        {
+            "name": "Friends of Animals",
+            "url": "https://interland3.donorperfect.net/weblink/WebLink.aspx?name=E344259&id=3",
+        },
+        {
+            "name": "Childhood Cancer Research Trust",
+            "url": "https://childhoodcancerresearchtrust.org/product/donation/",
+        },
+        {
+            "name": "WWF",
+            "url": "https://gifts.worldwildlife.org/gift-center/one-time-donation?srsltid=AfmBOooBqiPbFOMVbuyhrH1kQYEQUGbKufESEBoYo3GkGhODCLOg91hE",
+        },
+    ]
+    return JSONResponse(content=charity_links, status_code=200)
+
+
 @app.get("/api/health")
 async def health_check():
     return JSONResponse(

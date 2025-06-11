@@ -15,6 +15,8 @@ const DonationService = () => {
     description: 'Donation'
   });
   const [isCreatingPayment, setIsCreatingPayment] = useState(false);
+  const [charityLinks, setCharityLinks] = useState([]);
+  const [isLoadingCharities, setIsLoadingCharities] = useState(false);
 
   useEffect(() => {
     const fetchServiceStatus = async () => {
@@ -27,7 +29,21 @@ const DonationService = () => {
       }
     };
 
+    const fetchCharityLinks = async () => {
+      setIsLoadingCharities(true);
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_DONATION_SERVICE_URL}/get-charity-links`);
+        setCharityLinks(response.data);
+      } catch (err) {
+        console.error('Error fetching charity links:', err);
+        setCharityLinks([]);
+      } finally {
+        setIsLoadingCharities(false);
+      }
+    };
+
     fetchServiceStatus();
+    fetchCharityLinks();
   }, []);
 
   const handleInputChange = (e) => {
@@ -124,6 +140,27 @@ const DonationService = () => {
             {isCreatingPayment ? 'Creating Payment Link...' : 'Donate Now'}
           </button>
         </form>
+      </div>
+
+      <div className="charity-links-container">
+        <h3>Donate to Charity</h3>
+        {isLoadingCharities ? (
+          <div>Loading charity links...</div>
+        ) : charityLinks.length > 0 ? (
+          <div className="charity-buttons">
+            {charityLinks.map((charity, index) => (
+              <button
+                key={index}
+                className="charity-button"
+                onClick={() => window.open(charity.url, '_blank')}
+              >
+                {charity.name}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div>No charity links available at the moment.</div>
+        )}
       </div>
     </div>
   );
