@@ -1,0 +1,10 @@
+# Stripe Configuration for Donation Service
+STRIPE_SECRET_KEY=sk_test_key
+STRIPE_PUBLISHABLE_KEY=pk_test_key
+
+# Donation URLs
+DONATION_SUCCESS_URL=http://localhost:3000/success
+DONATION_CANCEL_URL=http://localhost:3000/cancel
+
+# CORS Configuration
+ALLOWED_ORIGINS=http://localhost:3000

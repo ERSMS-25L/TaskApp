@@ -26,6 +26,9 @@ const Navbar = () => {
                         <Link to="/login">Login</Link>
                     </li>
                 )}
+                <li>
+                    <Link to="/donations">Donations</Link> {/* Link to DonationService */}
+                </li>
             </ul>
         </nav>
     );

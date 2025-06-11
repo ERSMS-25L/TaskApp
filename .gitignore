@@ -1,2 +1,3 @@
 .idea
 gcp-iac/terraform/ersms-25l-462511-0ce7c8600046.json
+**.env
