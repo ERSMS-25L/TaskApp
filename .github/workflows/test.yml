@@ -1,0 +1,39 @@
+name: Test and QA
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install flake8
+          pip install -r user-service/requirements.txt
+          pip install -r task-service/requirements.txt
+          pip install -r notification-service/requirements.txt
+      - name: Lint
+        run: flake8 user-service task-service notification-service
+      - name: Run backend tests
+        run: |
+          pytest user-service/app/tests
+          pytest task-service/app/tests
+          pytest notification-service/app/tests
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+      - name: Run frontend tests
+        run: npm test --prefix frontend -- --watchAll=false
