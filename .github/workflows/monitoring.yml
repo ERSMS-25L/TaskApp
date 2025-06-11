@@ -36,16 +36,6 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-      - name: Deploy Prometheus for Monitoring
-        run: |
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo update
-          helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
-            --namespace monitoring --create-namespace \
-            --set kubeControllerManager.enabled=false \
-            --set kubeScheduler.enabled=false \
-            --set kubeEtcd.enabled=false
-
       - name: Deploy Grafana for Visualization
         run: |
           kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/grafana-namespace.yaml
