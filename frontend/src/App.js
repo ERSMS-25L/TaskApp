@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Transactions from './components/Transactions';
 import UserService from './components/UserService';
 import NotificationService from './components/NotificationService';
+import DonationService from './components/DonationService';
 import Navbar from './components/Navbar';
 import Home from './components/Home'; // Import Home component
 import './App.css';
@@ -19,6 +20,7 @@ function App() {
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/users" element={<UserService />} />
           <Route path="/notifications" element={<NotificationService />} />
+          <Route path="/donations" element={<DonationService />} />
         </Routes>
       </div>
     </Router>
