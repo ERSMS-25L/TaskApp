@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import './ServiceStatus.css'; // Reuse styling for consistency
 
 const DonationService = () => {
+  const { user } = useAuth();
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState(null);
   const [donationForm, setDonationForm] = useState({
@@ -17,6 +19,17 @@ const DonationService = () => {
   const [isCreatingPayment, setIsCreatingPayment] = useState(false);
   const [charityLinks, setCharityLinks] = useState([]);
   const [isLoadingCharities, setIsLoadingCharities] = useState(false);
+
+  useEffect(() => {
+    // Set default values for logged-in user
+    if (user) {
+      setDonationForm(prev => ({
+        ...prev,
+        donor_email: user.email || '',
+        donor_name: user.username || user.displayName || ''
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchServiceStatus = async () => {
@@ -111,7 +124,7 @@ const DonationService = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="donor_email">Your Email (optional):</label>
+            <label htmlFor="donor_email">Your Email:</label>
             <input
               type="email"
               id="donor_email"

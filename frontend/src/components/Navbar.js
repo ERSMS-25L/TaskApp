@@ -14,7 +14,7 @@ const Navbar = () => {
                     <Link to="/tasks">Tasks</Link>
                 </li>
                 <li>
-                    <Link to="/users">Users</Link>
+                    <Link to="/users">User</Link>
                 </li>
                 <li>
                     <Link to="/notifications">Notification</Link>

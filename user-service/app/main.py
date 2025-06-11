@@ -26,7 +26,9 @@ app.add_middleware(
 
 # Database setup
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sqlite_user.db")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})  # Required for SQLite
+engine = create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)  # Required for SQLite
 Base.metadata.create_all(bind=engine)
 
 # Firebase initialization
@@ -44,17 +46,21 @@ elif cred_json:
 
 if cred:
     firebase_admin.initialize_app(cred)
+    print("Firebase initialized with provided credentials.")
 else:
     # Initialize with default credentials if service account not provided
     firebase_admin.initialize_app()
+
 
 @app.get("/")
 def read_root():
     return {"message": "User Service is up and running!"}
 
+
 @app.get("/api/health")
 def health_check():
     return JSONResponse(content={"status": "User Service is running!"}, status_code=200)
+
 
 # Include the user routes
 app.include_router(user_router, prefix="/api", tags=["users"])

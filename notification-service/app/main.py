@@ -1,5 +1,6 @@
 # notification-service/main.py
 import os
+import requests
 
 import httpx
 from fastapi import FastAPI, HTTPException
@@ -7,7 +8,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from dotenv import load_dotenv
 
+load_dotenv()
 app = FastAPI()
 
 # Fetch the allowed origins from an environment variable, with a default fallback
@@ -28,11 +31,13 @@ notifications = []
 # URL of the task service to check for upcoming deadlines
 TASK_SERVICE_URL = os.getenv("TASK_SERVICE_URL", "http://task-service:8000")
 
+
 # Models
 class NotificationRequest(BaseModel):
     message: str
     recipient: str
     notification_type: str  # e.g., "email", "sms", "push"
+
 
 class NotificationResponse(BaseModel):
     id: int
@@ -49,7 +54,9 @@ async def fetch_due_tasks(days: int = 1):
         resp.raise_for_status()
         return resp.json()
 
+
 # Endpoints
+
 
 @app.post("/send-notification", response_model=NotificationResponse)
 async def send_notification(notification: NotificationRequest):
@@ -64,10 +71,12 @@ async def send_notification(notification: NotificationRequest):
     notifications.append(new_notification)
     return new_notification
 
+
 @app.get("/notifications", response_model=List[NotificationResponse])
 async def get_notifications():
     """Retrieve all sent notifications."""
     return notifications
+
 
 @app.get("/notifications/{notification_id}", response_model=NotificationResponse)
 async def get_notification(notification_id: int):
@@ -96,6 +105,35 @@ async def send_deadline_reminders(days: int = 1):
         created.append(new_notification)
     return created
 
+
+@app.post("/send-email-notification")
+def send_email_notification(message: str, subject: str, recipient: str):
+    r = requests.post(
+        os.getenv("MAILGUN_URL"),
+        auth=("api", os.getenv("MAILGUN_API_KEY")),
+        data={
+            "from": os.getenv(
+                "MAILGUN_FROM",
+                "Task App <postmaster@sandbox5455a55c8dd84d8c9b693c73d48de8d1.mailgun.org>",
+            ),
+            "to": recipient,
+            "subject": subject,
+            "text": message,
+        },
+    )
+    if r.status_code == 200:
+        return JSONResponse(
+            content={"message": "Email sent successfully"}, status_code=200
+        )
+    else:
+        raise HTTPException(
+            status_code=r.status_code,
+            detail=f"Failed to send email: {r.text}",
+        )
+
+
 @app.get("/api/health")
 async def health_check():
-    return JSONResponse(content={"status": "Notification Service is running!"}, status_code=200)
+    return JSONResponse(
+        content={"status": "Notification Service is running!"}, status_code=200
+    )
