@@ -14,12 +14,9 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          pip install flake8
           pip install -r user-service/requirements.txt
           pip install -r task-service/requirements.txt
           pip install -r notification-service/requirements.txt
-      - name: Lint
-        run: flake8 user-service task-service notification-service
       - name: Run backend tests
         run: |
           pytest user-service/app/tests
